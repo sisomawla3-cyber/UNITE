@@ -1,0 +1,2144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>unite.schoolgames</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --black:#000000;
+    --white:#ffffff;
+    --green:#22ff22;
+  }
+  *{box-sizing:border-box;}
+  html{
+    scroll-padding-top:env(safe-area-inset-top, 0px);
+  }
+  html,body{
+    margin:0;
+    padding:0;
+    background:var(--black);
+    color:var(--white);
+    font-family:'Courier New', monospace;
+    overflow-x:hidden;
+    padding-top:env(safe-area-inset-top, 0px);
+    padding-bottom:env(safe-area-inset-bottom, 0px);
+  }
+  body{overflow:auto;}
+  ::selection{background:var(--white);color:var(--black);}
+
+  h1,h2,h3,.brand-text{
+    font-family:'Anton', 'Arial Narrow', sans-serif;
+    font-weight:400;
+    margin:0;
+  }
+
+  .lowercase{ text-transform:lowercase; }
+  input::placeholder, textarea::placeholder{ text-transform:lowercase; }
+
+  a{color:inherit;text-decoration:none;}
+  button{
+    font-family:'Courier New', monospace;
+    cursor:pointer;
+  }
+
+  /* ================= TOP NAV ================= */
+  .topnav{
+    position:fixed;
+    top:env(safe-area-inset-top, 0px);
+    left:0;
+    right:0;
+    height:60px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 22px;
+    background:rgba(0,0,0,0.8);
+    backdrop-filter:blur(6px);
+    -webkit-backdrop-filter:blur(6px);
+    border-bottom:1px solid #161616;
+    z-index:900;
+  }
+  .topnav-brand{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    background:none;
+    border:none;
+    color:var(--white);
+    padding:0;
+  }
+  .topnav-brand svg{ width:24px; height:24px; }
+  .topnav-brand span{
+    font-family:'Anton', sans-serif;
+    font-size:0.95rem;
+    letter-spacing:0.5px;
+  }
+  .music-nav-btn{
+    border:1px solid var(--white);
+    background:transparent;
+    color:var(--white);
+    padding:8px 18px;
+    border-radius:999px;
+    font-size:0.78rem;
+    letter-spacing:1px;
+  }
+  .music-nav-btn:hover{ background:var(--white); color:var(--black); }
+
+  .nav-right{
+    display:flex;
+    align-items:center;
+    gap:16px;
+  }
+
+  .login-nav-btn{
+    border:1px solid var(--white);
+    background:transparent;
+    color:var(--white);
+    padding:8px 18px;
+    border-radius:999px;
+    font-size:0.78rem;
+    letter-spacing:1px;
+  }
+  .login-nav-btn:hover{ background:var(--white); color:var(--black); }
+
+  /* ---- profile ---- */
+  .profile-wrap{
+    position:relative;
+    display:none;
+  }
+  .profile-wrap.active{ display:block; }
+  .profile-btn{
+    width:36px;
+    height:36px;
+    border-radius:50%;
+    border:1px solid var(--white);
+    background:#0a0a0a;
+    color:var(--white);
+    font-size:1rem;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .dropdown-menu{
+    position:absolute;
+    top:calc(100% + 10px);
+    right:0;
+    min-width:220px;
+    background:#080808;
+    border:1px solid #222;
+    padding:14px;
+    display:none;
+    flex-direction:column;
+    gap:8px;
+    z-index:950;
+  }
+  .dropdown-menu.open{ display:flex; }
+  .dd-header{
+    padding-bottom:10px;
+    margin-bottom:4px;
+    border-bottom:1px solid #222;
+  }
+  .dd-username{ font-size:0.85rem; }
+  .dd-email{ font-size:0.68rem; opacity:0.5; margin-top:2px; }
+  .dd-badge{
+    display:inline-block;
+    margin-top:6px;
+    font-size:0.6rem;
+    letter-spacing:1px;
+    padding:3px 8px;
+    border:1px solid #ffd54a;
+    color:#ffd54a;
+  }
+  .dd-item{
+    background:none;
+    border:none;
+    color:var(--white);
+    text-align:left;
+    font-size:0.78rem;
+    letter-spacing:0.5px;
+    padding:8px 4px;
+  }
+  .dd-item:hover{ opacity:0.6; }
+
+  /* ---- coin wallet ---- */
+  .coin-wrap{
+    position:relative;
+    display:none;
+    align-items:center;
+    gap:8px;
+  }
+  .coin-wrap.active{ display:flex; }
+  .coin-btn{
+    position:relative;
+    width:34px;
+    height:34px;
+    border-radius:50%;
+    border:none;
+    background:#000;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .coin-ring{
+    position:absolute;
+    inset:0;
+    border-radius:50%;
+    padding:2px;
+    background:conic-gradient(from 0deg, #ff2fd6, #2fd6ff, #d6ff2f, #ff2fd6);
+    -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite:xor;
+    mask-composite:exclude;
+    animation:coinSpin 3s linear infinite, coinHue 4s linear infinite;
+  }
+  @keyframes coinSpin{ to{ transform:rotate(360deg); } }
+  @keyframes coinHue{ to{ filter:hue-rotate(360deg); } }
+  .coin-face{
+    font-family:'Anton', sans-serif;
+    font-size:0.9rem;
+    color:var(--white);
+    z-index:1;
+  }
+  .coin-balance-btn{
+    background:none;
+    border:none;
+    padding:0;
+    font-family:'Anton', sans-serif;
+    font-size:0.95rem;
+    letter-spacing:0.5px;
+    background-image:linear-gradient(90deg, #ff2f6d, #ff9d2f, #e0ff2f, #2fff8f, #2fd6ff, #b02fff, #ff2f6d);
+    background-size:300% auto;
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    animation:rainbowShift 5s linear infinite;
+  }
+  @keyframes rainbowShift{ to{ background-position:300% center; } }
+  .coin-dropdown{ min-width:240px; }
+  .coin-dropdown input{
+    background:transparent;
+    border:1px solid var(--white);
+    color:var(--white);
+    padding:9px 12px;
+    font-size:0.82rem;
+    font-family:'Courier New', monospace;
+    outline:none;
+  }
+
+  /* ================= HERO ================= */
+  .hero{
+    height:100vh;
+    width:100%;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+    text-align:center;
+    padding:0 20px;
+  }
+
+  .logo{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:22px;
+    flex-wrap:wrap;
+  }
+
+  .globe-svg{
+    width:clamp(60px, 9vw, 110px);
+    height:clamp(60px, 9vw, 110px);
+    flex-shrink:0;
+  }
+
+  .brand-text{
+    font-size:clamp(2.1rem, 7vw, 5.5rem);
+    letter-spacing:1px;
+    color:var(--white);
+    line-height:1;
+    white-space:nowrap;
+  }
+
+  .hero-sub{
+    margin-top:18px;
+    font-size:0.85rem;
+    letter-spacing:2px;
+    opacity:0.6;
+  }
+
+  .scroll-hint{
+    position:absolute;
+    bottom:48px;
+    left:50%;
+    transform:translateX(-50%);
+    font-size:0.85rem;
+    letter-spacing:1px;
+    color:var(--white);
+    background:none;
+    border:none;
+    animation:bounce 1.8s infinite;
+    padding:6px 10px;
+  }
+
+  @keyframes bounce{
+    0%,100%{ transform:translate(-50%,0); }
+    50%{ transform:translate(-50%,10px); }
+  }
+
+  /* ================= GAMES SECTION ================= */
+  .games-section{
+    min-height:100vh;
+    padding:70px 6vw 120px;
+    text-align:left;
+  }
+
+  .games-heading{
+    font-size:clamp(2.4rem, 6vw, 4rem);
+    letter-spacing:1px;
+  }
+
+  .pills-row{
+    margin-top:28px;
+    display:flex;
+    gap:12px;
+    overflow-x:auto;
+    padding-bottom:14px;
+    scrollbar-width:thin;
+  }
+  .pills-row::-webkit-scrollbar{ height:4px; }
+  .pills-row::-webkit-scrollbar-thumb{ background:#333; }
+
+  .pill{
+    flex-shrink:0;
+    border:1px solid var(--white);
+    background:transparent;
+    color:var(--white);
+    padding:8px 20px;
+    border-radius:999px;
+    font-size:0.8rem;
+    letter-spacing:1px;
+  }
+  .pill.active{
+    background:var(--white);
+    color:var(--black);
+  }
+
+  .games-grid{
+    margin-top:36px;
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(220px,1fr));
+    gap:22px;
+  }
+
+  .tile{
+    position:relative;
+    aspect-ratio:1/1;
+    border:2px solid var(--white);
+    overflow:hidden;
+    cursor:pointer;
+    transition:transform 0.2s ease;
+    background:#000;
+  }
+  .tile:hover{ transform:scale(1.04); }
+
+  .tile img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+    opacity:0.85;
+  }
+
+  .tile-label{
+    position:absolute;
+    left:0; right:0; bottom:0;
+    padding:10px 12px;
+    background:linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+    font-family:'Anton', sans-serif;
+    font-size:1.1rem;
+    letter-spacing:0.5px;
+  }
+  .tile-cat{
+    display:block;
+    font-family:'Courier New', monospace;
+    font-size:0.65rem;
+    opacity:0.6;
+    margin-top:2px;
+  }
+
+  .empty-note{
+    opacity:0.5;
+    font-size:0.85rem;
+    margin-top:10px;
+  }
+
+  /* ================= FOOTER ================= */
+  footer{
+    padding:40px 20px 50px;
+    text-align:center;
+    font-size:0.78rem;
+    letter-spacing:0.5px;
+    opacity:0.75;
+  }
+  .copyright-trigger{
+    background:none;
+    border:none;
+    color:var(--white);
+    font-family:'Courier New', monospace;
+    font-size:inherit;
+    letter-spacing:inherit;
+    padding:4px;
+  }
+  .copyright-trigger:hover{ opacity:1; }
+
+  /* ================= OVERLAYS (shared) ================= */
+  .overlay{
+    position:fixed;
+    inset:0;
+    background:var(--black);
+    z-index:1000;
+    display:none;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+  }
+  .overlay.open{ display:flex; }
+
+  /* ---- lock overlay ---- */
+  #lockOverlay .lock-icon{
+    font-size:3.5rem;
+    margin-bottom:18px;
+  }
+  #lockOverlay input{
+    background:transparent;
+    border:2px solid var(--white);
+    color:var(--white);
+    text-align:center;
+    font-size:1.1rem;
+    letter-spacing:4px;
+    padding:12px 18px;
+    width:260px;
+    max-width:80vw;
+    outline:none;
+  }
+  #lockOverlay .lock-close{
+    margin-top:24px;
+    background:none;
+    border:1px solid #444;
+    color:var(--white);
+    padding:8px 18px;
+    font-size:0.75rem;
+    letter-spacing:1px;
+  }
+
+  @keyframes shake{
+    0%,100%{ transform:translateX(0); }
+    20%{ transform:translateX(-14px); }
+    40%{ transform:translateX(14px); }
+    60%{ transform:translateX(-10px); }
+    80%{ transform:translateX(10px); }
+  }
+  .shake{ animation:shake 0.4s ease; border-color:#ff3333 !important; }
+
+  /* ---- admin overlay ---- */
+  #adminOverlay{
+    align-items:flex-start;
+    justify-content:center;
+    overflow-y:auto;
+    padding:60px 20px 80px;
+  }
+  .admin-panel{
+    width:100%;
+    max-width:560px;
+  }
+  .admin-panel h2{
+    font-size:2rem;
+    margin-bottom:6px;
+  }
+  .admin-sub{
+    font-size:0.8rem;
+    opacity:0.6;
+    margin-bottom:24px;
+  }
+
+  .admin-tabs{
+    display:flex;
+    gap:10px;
+    margin-bottom:28px;
+  }
+  .admin-tab-btn{
+    border:1px solid var(--white);
+    background:transparent;
+    color:var(--white);
+    padding:9px 20px;
+    border-radius:999px;
+    font-size:0.78rem;
+    letter-spacing:1px;
+  }
+  .admin-tab-btn.active{
+    background:var(--white);
+    color:var(--black);
+  }
+  .admin-tab-content{ display:none; }
+  .admin-tab-content.active{ display:block; }
+
+  .admin-tabs{
+    flex-wrap:wrap;
+  }
+
+  .manage-heading{
+    font-family:'Anton', sans-serif;
+    text-transform:none;
+    font-size:1.15rem;
+    letter-spacing:0.5px;
+  }
+  .manage-sub{
+    font-size:0.72rem;
+    opacity:0.5;
+    margin-top:4px;
+    margin-bottom:16px;
+  }
+  .manage-list{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .manage-row{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    border:1px solid #333;
+    padding:10px 12px;
+  }
+  .manage-row.deleted-row{
+    opacity:0.7;
+    border-style:dashed;
+  }
+  .manage-thumb{
+    width:46px;
+    height:46px;
+    object-fit:cover;
+    border:1px solid var(--white);
+    flex-shrink:0;
+    background:#0a0a0a;
+  }
+  .manage-info{
+    flex:1;
+    min-width:0;
+  }
+  .manage-name{
+    font-size:0.88rem;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .manage-meta{
+    font-size:0.65rem;
+    opacity:0.5;
+    margin-top:2px;
+  }
+  .manage-row-actions{
+    display:flex;
+    gap:8px;
+    flex-shrink:0;
+  }
+  .manage-btn{
+    width:32px;
+    height:32px;
+    border:1px solid var(--white);
+    background:transparent;
+    color:var(--white);
+    font-size:0.85rem;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-shrink:0;
+  }
+  .manage-btn:hover{ background:var(--white); color:var(--black); }
+  .manage-btn.delete-btn{ color:#ff4444; border-color:#ff4444; }
+  .manage-btn.delete-btn:hover{ background:#ff4444; color:var(--white); }
+  .manage-btn.restore-btn{ color:#66ff99; border-color:#66ff99; }
+  .manage-btn.restore-btn:hover{ background:#66ff99; color:var(--black); }
+  .manage-empty{
+    opacity:0.45;
+    font-size:0.78rem;
+    padding:10px 0;
+  }
+
+  .field{
+    margin-bottom:20px;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+  }
+  .field label{
+    font-size:0.7rem;
+    letter-spacing:1px;
+    opacity:0.7;
+  }
+  .field .hint{
+    font-size:0.65rem;
+    opacity:0.45;
+    letter-spacing:0.5px;
+  }
+  .field input, .field select, .field textarea{
+    background:transparent;
+    border:1px solid var(--white);
+    color:var(--white);
+    padding:12px 14px;
+    font-size:0.9rem;
+    font-family:'Courier New', monospace;
+    outline:none;
+    resize:vertical;
+  }
+  .field select{
+    appearance:none;
+    background:transparent;
+  }
+  .field select option{ background:#000; color:#fff; }
+  .field textarea{ min-height:160px; line-height:1.4; }
+
+  .field input[type="file"]{
+    border-style:dashed;
+    padding:10px;
+    font-size:0.78rem;
+  }
+  .field input[type="file"]::file-selector-button{
+    background:var(--white);
+    color:var(--black);
+    border:none;
+    padding:8px 14px;
+    margin-right:10px;
+    font-family:'Courier New', monospace;
+    font-size:0.72rem;
+    letter-spacing:0.5px;
+    cursor:pointer;
+  }
+
+  .or-divider{
+    font-size:0.65rem;
+    opacity:0.4;
+    letter-spacing:1px;
+    margin:2px 0;
+  }
+
+  .filename-preview{
+    font-size:0.68rem;
+    opacity:0.6;
+    word-break:break-all;
+  }
+
+  .admin-actions{
+    display:flex;
+    gap:14px;
+    flex-wrap:wrap;
+    margin-top:10px;
+    align-items:center;
+  }
+  .btn{
+    border:1px solid var(--white);
+    background:transparent;
+    color:var(--white);
+    padding:12px 22px;
+    font-size:0.8rem;
+    letter-spacing:1px;
+  }
+  .btn.solid{
+    background:var(--white);
+    color:var(--black);
+  }
+  .btn.ghost{ opacity:0.6; border-color:#444; }
+
+  .form-status{
+    font-size:0.72rem;
+    letter-spacing:0.5px;
+    opacity:0.8;
+    margin-top:4px;
+  }
+  .form-status.warn{ color:#ffcc55; opacity:1; }
+  .form-status.ok{ color:#66ff99; opacity:1; }
+
+  .export-box{
+    margin-top:30px;
+    border-top:1px solid #333;
+    padding-top:22px;
+  }
+  .export-out{
+    margin-top:14px;
+    width:100%;
+    min-height:120px;
+    background:#0a0a0a;
+    border:1px solid #333;
+    color:#9cff9c;
+    font-size:0.72rem;
+    padding:12px;
+    display:none;
+  }
+
+  .admin-close{
+    position:fixed;
+    top:20px;
+    right:24px;
+    background:none;
+    border:1px solid var(--white);
+    color:var(--white);
+    padding:8px 16px;
+    font-size:0.75rem;
+    letter-spacing:1px;
+  }
+
+  /* ---- code viewer ---- */
+  #codeViewOverlay{
+    background:#000;
+  }
+  #codeViewOverlay .code-head{
+    width:100%;
+    max-width:900px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:0 20px 14px;
+  }
+  #codeViewOverlay .code-head h3{
+    color:var(--green);
+    font-family:'Courier New', monospace;
+    font-size:0.95rem;
+    letter-spacing:1px;
+  }
+  #codeViewText{
+    width:90%;
+    max-width:900px;
+    flex:1;
+    max-height:70vh;
+    background:#000;
+    color:var(--green);
+    border:1px solid #114411;
+    font-family:'Courier New', monospace;
+    font-size:0.8rem;
+    line-height:1.5;
+    padding:18px;
+    resize:none;
+    outline:none;
+  }
+
+  /* ---- game player view ---- */
+  #gamePlayerView{
+    background:#000;
+    justify-content:flex-start;
+  }
+  .player-nav{
+    width:100%;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:16px 22px;
+    border-bottom:1px solid #222;
+  }
+  .player-nav .title{
+    font-size:0.9rem;
+    letter-spacing:1px;
+  }
+  .exit-btn{
+    background:var(--white);
+    color:var(--black);
+    border:none;
+    padding:9px 16px;
+    font-size:0.75rem;
+    letter-spacing:1px;
+  }
+  .player-frame-wrap{
+    position:relative;
+    flex:1;
+    width:100%;
+    display:flex;
+  }
+  #gameFrame{
+    flex:1;
+    border:none;
+    width:100%;
+    height:100%;
+    background:#fff;
+  }
+  .perf-hud{
+    position:absolute;
+    bottom:14px;
+    right:14px;
+    background:rgba(0,0,0,0.75);
+    border:1px solid #333;
+    color:#9cff9c;
+    font-size:0.65rem;
+    letter-spacing:0.5px;
+    padding:6px 10px;
+    pointer-events:none;
+  }
+
+  /* ================= MUSIC PAGE (unite.music) ================= */
+  #musicOverlay{
+    justify-content:flex-start;
+    background:#000;
+  }
+  .music-header{
+    width:100%;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:18px 26px;
+    border-bottom:1px solid #161616;
+  }
+  .music-header h2{
+    font-size:1.6rem;
+    letter-spacing:0.5px;
+  }
+  .music-header .sub{
+    font-size:0.72rem;
+    opacity:0.5;
+    margin-top:4px;
+  }
+  .music-body{
+    flex:1;
+    width:100%;
+    overflow-y:auto;
+    padding:30px 26px 140px;
+  }
+  .music-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(180px,1fr));
+    gap:20px;
+  }
+  .track-card{
+    cursor:pointer;
+  }
+  .track-cover{
+    position:relative;
+    aspect-ratio:1/1;
+    border:2px solid var(--white);
+    overflow:hidden;
+    background:#0a0a0a;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .track-cover img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    opacity:0.9;
+  }
+  .track-cover .note-fallback{
+    font-size:2rem;
+    opacity:0.3;
+  }
+  .track-play-btn{
+    position:absolute;
+    inset:0;
+    background:rgba(0,0,0,0.45);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:2rem;
+    opacity:0;
+    transition:opacity 0.15s ease;
+  }
+  .track-card:hover .track-play-btn{ opacity:1; }
+  .track-play-btn.playing{ opacity:1; background:rgba(0,0,0,0.6); }
+
+  .track-meta{
+    margin-top:10px;
+  }
+  .track-title{
+    font-family:'Anton', sans-serif;
+    font-size:0.95rem;
+    letter-spacing:0.5px;
+  }
+  .track-artist{
+    font-size:0.72rem;
+    opacity:0.55;
+    margin-top:2px;
+  }
+
+  .music-empty{
+    opacity:0.5;
+    font-size:0.85rem;
+    padding:40px 0;
+    text-align:center;
+  }
+
+  .player-bar{
+    position:fixed;
+    left:0; right:0; bottom:0;
+    display:none;
+    align-items:center;
+    gap:16px;
+    padding:12px 22px;
+    padding-bottom:calc(12px + env(safe-area-inset-bottom, 0px));
+    background:#0a0a0a;
+    border-top:1px solid #222;
+    z-index:1001;
+  }
+  .player-bar.active{ display:flex; }
+  .player-bar-cover{
+    width:46px;
+    height:46px;
+    border:1px solid var(--white);
+    object-fit:cover;
+    flex-shrink:0;
+  }
+  .player-bar-info{ min-width:120px; }
+  .player-bar-title{ font-size:0.8rem; }
+  .player-bar-artist{ font-size:0.65rem; opacity:0.55; }
+  .player-toggle-btn{
+    background:var(--white);
+    color:var(--black);
+    border:none;
+    width:36px; height:36px;
+    border-radius:50%;
+    flex-shrink:0;
+    font-size:0.9rem;
+  }
+  .player-progress-wrap{
+    flex:1;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    min-width:100px;
+  }
+  .player-time{
+    font-size:0.62rem;
+    opacity:0.55;
+    width:34px;
+    flex-shrink:0;
+  }
+  .player-seek{
+    flex:1;
+    accent-color:var(--white);
+  }
+
+  @media (max-width:640px){
+    .brand-text{ font-size:2rem; }
+    .globe-svg{ width:52px; height:52px; }
+    .topnav-brand span{ display:none; }
+    .player-bar-info{ display:none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ================= TOP NAV ================= -->
+<nav class="topnav">
+  <button class="topnav-brand" id="navBrandBtn" aria-label="unite.schoolgames">
+    <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <circle cx="100" cy="100" r="96" fill="none" stroke="#ffffff" stroke-width="3"/>
+      <ellipse cx="100" cy="100" rx="96" ry="34" fill="none" stroke="#ffffff" stroke-width="1.5"/>
+      <ellipse cx="100" cy="100" rx="34" ry="96" fill="none" stroke="#ffffff" stroke-width="1.5"/>
+      <clipPath id="navGlobeClip"><circle cx="100" cy="100" r="96"/></clipPath>
+      <g clip-path="url(#navGlobeClip)" fill="#ffffff">
+        <path d="M20 45 L38 35 L52 40 L58 34 L66 38 L60 48 L64 55 L56 62 L58 70 L48 78 L38 74 L30 82 L20 78 L14 66 L18 55 Z"/>
+        <path d="M56 110 L66 106 L74 116 L72 132 L66 150 L60 168 L52 172 L48 156 L52 138 L48 122 Z"/>
+        <path d="M110 58 L124 54 L136 62 L138 82 L130 104 L122 124 L112 134 L104 122 L108 100 L102 82 L106 68 Z"/>
+      </g>
+    </svg>
+    <span>UNITE.SCHOOLGAMES</span>
+  </button>
+  <div class="nav-right">
+    <button class="music-nav-btn lowercase" id="musicNavBtn">unite.music</button>
+
+    <button class="login-nav-btn lowercase" id="loginNavBtn">login</button>
+
+    <div class="profile-wrap" id="profileWrap">
+      <button class="profile-btn" id="profileBtn">👤</button>
+      <div class="dropdown-menu profile-dropdown" id="profileDropdown">
+        <div class="dd-header">
+          <div class="dd-username" id="ddUsername">username</div>
+          <div class="dd-email lowercase" id="ddEmail">email</div>
+          <div class="dd-badge lowercase" id="ddPremiumBadge" style="display:none;">premium</div>
+        </div>
+        <button class="dd-item lowercase" id="ddSettingsBtn">settings</button>
+        <button class="dd-item lowercase" id="ddResetBtn">request password reset</button>
+        <button class="dd-item lowercase" id="ddLogoutBtn">logout</button>
+      </div>
+    </div>
+
+    <div class="coin-wrap" id="coinWrap">
+      <button class="coin-btn" id="coinBtn" aria-label="unite coins">
+        <span class="coin-ring"></span>
+        <span class="coin-face">U</span>
+      </button>
+      <button class="coin-balance-btn" id="coinBalanceBtn"><span id="coinBalance">1500</span></button>
+      <div class="dropdown-menu coin-dropdown" id="coinDropdown">
+        <label class="lowercase">redeem code</label>
+        <input type="text" id="redeemInput" class="lowercase" placeholder="enter voucher code" autocomplete="off">
+        <button class="btn solid lowercase" id="redeemBtn">redeem</button>
+        <div class="form-status lowercase" id="redeemStatus"></div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- ================= HERO ================= -->
+<section class="hero">
+  <div class="logo" aria-label="unite.schoolgames">
+    <svg class="globe-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <circle cx="100" cy="100" r="96" fill="none" stroke="#ffffff" stroke-width="2"/>
+      <ellipse cx="100" cy="100" rx="96" ry="34" fill="none" stroke="#ffffff" stroke-width="1"/>
+      <ellipse cx="100" cy="100" rx="96" ry="66" fill="none" stroke="#ffffff" stroke-width="1"/>
+      <line x1="4" y1="100" x2="196" y2="100" stroke="#ffffff" stroke-width="1"/>
+      <ellipse cx="100" cy="100" rx="34" ry="96" fill="none" stroke="#ffffff" stroke-width="1"/>
+      <ellipse cx="100" cy="100" rx="66" ry="96" fill="none" stroke="#ffffff" stroke-width="1"/>
+      <line x1="100" y1="4" x2="100" y2="196" stroke="#ffffff" stroke-width="1"/>
+      <clipPath id="globeClip"><circle cx="100" cy="100" r="96"/></clipPath>
+      <g clip-path="url(#globeClip)" fill="#ffffff">
+        <path d="M20 45 L38 35 L52 40 L58 34 L66 38 L60 48 L64 55 L56 62 L58 70 L48 78 L38 74 L30 82 L20 78 L14 66 L18 55 Z"/>
+        <path d="M62 22 L74 18 L84 24 L80 34 L70 36 L60 30 Z"/>
+        <path d="M56 110 L66 106 L74 116 L72 132 L66 150 L60 168 L52 172 L48 156 L52 138 L48 122 Z"/>
+        <path d="M108 34 L118 28 L128 32 L126 40 L134 42 L130 50 L118 50 L112 44 Z"/>
+        <path d="M110 58 L124 54 L136 62 L138 82 L130 104 L122 124 L112 134 L104 122 L108 100 L102 82 L106 68 Z"/>
+      </g>
+    </svg>
+    <div class="brand-text">UNITE.SCHOOLGAMES</div>
+  </div>
+  <div class="hero-sub lowercase">an indie web game portal</div>
+  <button class="scroll-hint lowercase" id="scrollHintBtn">scroll down for games ↓</button>
+</section>
+
+<!-- ================= GAMES ================= -->
+<section class="games-section" id="gamesSection">
+  <h2 class="games-heading">Games</h2>
+  <div class="pills-row lowercase" id="pillsRow">
+    <button class="pill active" data-cat="all">all</button>
+  </div>
+  <div class="games-grid" id="gamesGrid"></div>
+  <div class="empty-note lowercase" id="emptyNote" style="display:none;">no games in this category yet.</div>
+</section>
+
+<footer>
+  <button class="copyright-trigger" id="copyrightTrigger">
+    <span style="text-transform:uppercase;">UNITE</span><span class="lowercase"> © copyright for unite.schoolgames 2026. all rights reserved.</span>
+  </button>
+</footer>
+
+<!-- ================= AUTH OVERLAY (login / sign up) ================= -->
+<div class="overlay" id="authOverlay">
+  <button class="admin-close lowercase" id="authCloseBtn">close ✕</button>
+  <div class="auth-panel">
+    <h2 class="lowercase" id="authHeading">welcome back</h2>
+
+    <div class="admin-tabs">
+      <button class="admin-tab-btn active lowercase" data-authtab="signin">sign in</button>
+      <button class="admin-tab-btn lowercase" data-authtab="signup">sign up</button>
+    </div>
+
+    <div class="auth-tab-content active" id="authtab-signin">
+      <div class="oauth-row">
+        <button class="oauth-btn lowercase" id="googleSignInBtn"><span class="oauth-icon">G</span> continue with google</button>
+        <button class="oauth-btn lowercase" id="appleSignInBtn"><span class="oauth-icon"></span> continue with apple</button>
+      </div>
+      <div class="or-divider lowercase">— or sign in manually —</div>
+      <form id="signinForm">
+        <div class="field">
+          <label class="lowercase">username or email</label>
+          <input type="text" id="siIdentifier" class="lowercase" placeholder="username or email" required>
+        </div>
+        <div class="field">
+          <label class="lowercase">password</label>
+          <input type="password" id="siPassword" placeholder="password" required>
+        </div>
+        <div class="admin-actions">
+          <button type="submit" class="btn solid lowercase">sign in</button>
+        </div>
+        <div class="form-status lowercase" id="signinStatus"></div>
+      </form>
+    </div>
+
+    <div class="auth-tab-content" id="authtab-signup">
+      <div class="oauth-row">
+        <button class="oauth-btn lowercase" id="googleSignUpBtn"><span class="oauth-icon">G</span> sign up with google</button>
+        <button class="oauth-btn lowercase" id="appleSignUpBtn"><span class="oauth-icon"></span> sign up with apple</button>
+      </div>
+      <div class="or-divider lowercase">— or sign up manually —</div>
+      <form id="signupForm">
+        <div class="field">
+          <label class="lowercase">desired username</label>
+          <input type="text" id="suUsername" class="lowercase" placeholder="username" required>
+        </div>
+        <div class="field">
+          <label class="lowercase">email</label>
+          <input type="email" id="suEmail" class="lowercase" placeholder="email" required>
+        </div>
+        <div class="field">
+          <label class="lowercase">password</label>
+          <input type="password" id="suPassword" placeholder="password" required>
+        </div>
+        <div class="field">
+          <label class="lowercase">confirm password</label>
+          <input type="password" id="suPasswordConfirm" placeholder="confirm password" required>
+        </div>
+        <div class="admin-actions">
+          <button type="submit" class="btn solid lowercase">sign up</button>
+        </div>
+        <div class="form-status lowercase" id="signupStatus"></div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ================= CENTER NOTICE (premium / login gate) ================= -->
+<div class="center-notice" id="centerNotice"></div>
+
+<!-- ================= LOCK OVERLAY ================= -->
+<div class="overlay" id="lockOverlay">
+  <div class="lock-icon">🔒</div>
+  <input type="password" id="passcodeInput" class="lowercase" placeholder="enter access code" maxlength="20" autocomplete="off">
+  <button class="lock-close lowercase" id="lockCloseBtn">close</button>
+</div>
+
+<!-- ================= ADMIN OVERLAY ================= -->
+<div class="overlay" id="adminOverlay">
+
+  <button class="admin-close lowercase" id="adminCloseBtn">close ✕</button>
+  <div class="admin-panel">
+    <h2>admin panel</h2>
+    <div class="admin-sub lowercase">publish new content to unite.schoolgames</div>
+
+    <div class="admin-tabs">
+      <button class="admin-tab-btn active lowercase" data-tab="games">add game</button>
+      <button class="admin-tab-btn lowercase" data-tab="manage">manage games</button>
+      <button class="admin-tab-btn lowercase" data-tab="music">add music</button>
+    </div>
+
+    <!-- ---- GAMES TAB ---- -->
+    <div class="admin-tab-content active" id="tab-games">
+      <form id="publishForm">
+        <div class="field">
+          <label class="lowercase">game name</label>
+          <input type="text" id="fGameName" class="lowercase" placeholder="e.g. block breaker" required>
+        </div>
+        <div class="field">
+          <label class="lowercase">game category tag</label>
+          <select id="fGameCategory" class="lowercase">
+            <option value="arcade">arcade</option>
+            <option value="puzzle">puzzle</option>
+            <option value="clicker">clicker</option>
+            <option value="action">action</option>
+            <option value="casual">casual</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="lowercase">game cover image</label>
+          <input type="url" id="fGameImage" class="lowercase" placeholder="https://example.com/cover.png">
+          <div class="or-divider lowercase">— or —</div>
+          <input type="file" id="fGameImageFile" accept="image/*">
+          <div class="filename-preview lowercase" id="fGameImageFileName"></div>
+          <div class="hint lowercase">paste a link, or upload an image file directly — the uploaded file takes priority.</div>
+        </div>
+        <div class="field">
+          <label class="lowercase">game source code (html/css/js)</label>
+          <textarea id="fGameCode" style="font-family:'Courier New',monospace;" class="lowercase" placeholder="&lt;html&gt;...raw playable game code...&lt;/html&gt;" required></textarea>
+          <div class="or-divider lowercase">— or —</div>
+          <input type="file" id="fGameCodeFile" accept=".html,.htm,.js,.css,.txt">
+          <div class="filename-preview lowercase" id="fGameCodeFileName"></div>
+          <div class="hint lowercase">type/paste plain code above, or upload a code file — it will fill the box above automatically.</div>
+        </div>
+        <div class="admin-actions">
+          <button type="submit" class="btn solid lowercase">publish game</button>
+          <button type="button" class="btn ghost lowercase" id="clearFormBtn">clear form</button>
+        </div>
+        <div class="form-status lowercase" id="gameFormStatus"></div>
+      </form>
+    </div>
+
+    <!-- ---- MANAGE GAMES TAB (current library + recovery history) ---- -->
+    <div class="admin-tab-content" id="tab-manage">
+      <h3 class="manage-heading lowercase">your games</h3>
+      <div class="manage-sub lowercase">every game currently live on the site. edit or delete any of them, including the built-in ones.</div>
+      <div class="manage-list" id="manageGamesList"></div>
+      <div class="manage-empty lowercase" id="manageGamesEmpty" style="display:none;">no games yet — publish one from the "add game" tab.</div>
+
+      <h3 class="manage-heading lowercase" style="margin-top:34px;">recently deleted</h3>
+      <div class="manage-sub lowercase">deleted games land here so you can recover them instead of losing them for good.</div>
+      <div class="manage-list" id="deletedGamesList"></div>
+      <div class="manage-empty lowercase" id="deletedGamesEmpty" style="display:none;">nothing in the recovery history.</div>
+    </div>
+
+    <!-- ---- MUSIC TAB ---- -->
+    <div class="admin-tab-content" id="tab-music">
+      <form id="musicForm">
+        <div class="field">
+          <label class="lowercase">song name</label>
+          <input type="text" id="fSongName" class="lowercase" placeholder="e.g. neon skyline" required>
+        </div>
+        <div class="field">
+          <label class="lowercase">artist name</label>
+          <input type="text" id="fArtistName" class="lowercase" placeholder="e.g. spy" required>
+        </div>
+        <div class="field">
+          <label class="lowercase">mp3 file</label>
+          <input type="file" id="fMp3File" accept="audio/mpeg,audio/mp3,.mp3" required>
+          <div class="filename-preview lowercase" id="fMp3FileName"></div>
+        </div>
+        <div class="field">
+          <label class="lowercase">album cover photo</label>
+          <input type="file" id="fCoverFile" accept="image/*">
+          <div class="filename-preview lowercase" id="fCoverFileName"></div>
+        </div>
+        <div class="admin-actions">
+          <button type="submit" class="btn solid lowercase">release music</button>
+          <button type="button" class="btn ghost lowercase" id="clearMusicFormBtn">clear form</button>
+        </div>
+        <div class="form-status lowercase" id="musicFormStatus"></div>
+      </form>
+    </div>
+
+    <div class="export-box">
+      <button class="btn lowercase" id="exportBtn">export library data</button>
+      <textarea class="export-out" id="exportOut" readonly></textarea>
+    </div>
+  </div>
+</div>
+
+<!-- ================= CODE VIEW OVERLAY ================= -->
+<div class="overlay" id="codeViewOverlay">
+  <div class="code-head">
+    <h3 id="codeViewTitle">source</h3>
+    <button class="btn lowercase" id="codeCloseBtn">close ✕</button>
+  </div>
+  <textarea id="codeViewText" readonly spellcheck="false"></textarea>
+</div>
+
+<!-- ================= GAME PLAYER VIEW ================= -->
+<div class="overlay" id="gamePlayerView">
+  <div class="player-nav">
+    <div class="title lowercase" id="playerTitle">game</div>
+    <button class="exit-btn lowercase" id="exitGameBtn">exit game ✕</button>
+  </div>
+  <div class="player-frame-wrap">
+    <iframe id="gameFrame" sandbox="allow-scripts allow-pointer-lock" title="game runtime"></iframe>
+    <div class="perf-hud" id="perfHud">fps: 60 | time: 0s</div>
+  </div>
+</div>
+
+<!-- ================= MUSIC PAGE (unite.music) ================= -->
+<div class="overlay" id="musicOverlay">
+  <div class="music-header">
+    <div>
+      <h2>unite.music</h2>
+      <div class="sub lowercase">listen to tracks released by unite.schoolgames</div>
+    </div>
+    <button class="btn lowercase" id="musicCloseBtn">close ✕</button>
+  </div>
+  <div class="music-body">
+    <div class="music-grid" id="musicGrid"></div>
+    <div class="music-empty lowercase" id="musicEmptyNote" style="display:none;">no tracks released yet.</div>
+  </div>
+</div>
+
+<!-- persistent bottom player bar -->
+<div class="player-bar" id="playerBar">
+  <img class="player-bar-cover" id="playerBarCover" alt="">
+  <div class="player-bar-info">
+    <div class="player-bar-title lowercase" id="playerBarTitle">—</div>
+    <div class="player-bar-artist lowercase" id="playerBarArtist">—</div>
+  </div>
+  <button class="player-toggle-btn" id="playerToggleBtn">▶</button>
+  <div class="player-progress-wrap">
+    <span class="player-time" id="playerTimeCurrent">0:00</span>
+    <input type="range" class="player-seek" id="playerSeek" min="0" max="100" value="0">
+    <span class="player-time" id="playerTimeTotal">0:00</span>
+  </div>
+</div>
+<audio id="audioPlayer" preload="metadata"></audio>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------------- AUDIO FEEDBACK ENGINE (UI sounds) ---------------- */
+  let audioCtx = null;
+  function getCtx(){
+    if(!audioCtx){
+      try{ audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+      catch(e){ audioCtx = null; }
+    }
+    return audioCtx;
+  }
+  function playBleep(){
+    try{
+      const ctx = getCtx();
+      if(!ctx) return;
+      if(ctx.state === "suspended" && ctx.resume) ctx.resume().catch(function(){});
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      const filter = ctx.createBiquadFilter();
+      filter.type = "lowpass";
+      filter.frequency.value = 1200;
+      osc.type = "square";
+      osc.frequency.setValueAtTime(520, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(280, ctx.currentTime + 0.08);
+      gain.gain.setValueAtTime(0.06, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1);
+      osc.connect(filter); filter.connect(gain); gain.connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + 0.1);
+    }catch(e){ /* never let a sound glitch block the button's real action */ }
+  }
+  function playError(){
+    try{
+      const ctx = getCtx();
+      if(!ctx) return;
+      if(ctx.state === "suspended" && ctx.resume) ctx.resume().catch(function(){});
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = "sawtooth";
+      osc.frequency.setValueAtTime(160, ctx.currentTime);
+      osc.frequency.linearRampToValueAtTime(70, ctx.currentTime + 0.35);
+      gain.gain.setValueAtTime(0.08, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.35);
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + 0.35);
+    }catch(e){ /* never let a sound glitch block the button's real action */ }
+  }
+
+  /* ---------------- SCROLL SAFETY ---------------- */
+  function resetScroll(){ document.body.style.overflow = "auto"; }
+  function lockScroll(){ document.body.style.overflow = "hidden"; }
+
+  /* ---------------- NAV ---------------- */
+  document.getElementById("navBrandBtn").addEventListener("click", function(){
+    playBleep();
+    window.scrollTo({top:0, behavior:"smooth"});
+  });
+
+  document.getElementById("scrollHintBtn").addEventListener("click", function(){
+    playBleep();
+    document.getElementById("gamesSection").scrollIntoView({behavior:"smooth"});
+  });
+
+  /* ---------------- FILE READING HELPERS ---------------- */
+  function readFileAsDataURL(file){
+    return new Promise(function(resolve, reject){
+      const reader = new FileReader();
+      reader.onload = function(){ resolve(reader.result); };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+  function readFileAsText(file){
+    return new Promise(function(resolve, reject){
+      const reader = new FileReader();
+      reader.onload = function(){ resolve(reader.result); };
+      reader.onerror = reject;
+      reader.readAsText(file);
+    });
+  }
+  function formatBytes(bytes){
+    if(bytes < 1024) return bytes + " b";
+    if(bytes < 1024*1024) return (bytes/1024).toFixed(1) + " kb";
+    return (bytes/(1024*1024)).toFixed(2) + " mb";
+  }
+
+  /* Resizes/compresses an uploaded image before it's stored, so large photos
+     (multi-MB phone photos) don't freeze the page or blow localStorage's quota.
+     This is what was causing "publish game" to hang for a long time. */
+  function resizeImageFile(file, maxDim, quality){
+    return new Promise(function(resolve, reject){
+      const reader = new FileReader();
+      reader.onload = function(e){
+        const img = new Image();
+        img.onload = function(){
+          let w = img.width, h = img.height;
+          if(w > maxDim || h > maxDim){
+            if(w >= h){ h = Math.round(h * (maxDim / w)); w = maxDim; }
+            else{ w = Math.round(w * (maxDim / h)); h = maxDim; }
+          }
+          const canvas = document.createElement("canvas");
+          canvas.width = w;
+          canvas.height = h;
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0, w, h);
+          try{
+            resolve(canvas.toDataURL("image/jpeg", quality));
+          }catch(err){
+            resolve(e.target.result);
+          }
+        };
+        img.onerror = function(){ resolve(e.target.result); };
+        img.src = e.target.result;
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  /* ================= GAME LIBRARY ================= */
+  const GAMES_KEY = "uniteSchoolGamesLibrary";
+
+  const seedGames = [
+    {
+      id: "default-1",
+      name: "pixel clicker",
+      category: "clicker",
+      image: "",
+      code: "<!DOCTYPE html><html><head><style>body{margin:0;background:#000;color:#fff;font-family:sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;}button{font-size:2rem;padding:20px 40px;background:#fff;color:#000;border:none;cursor:pointer;}#score{font-size:1.5rem;margin-bottom:20px;}</style></head><body><div id='score'>score: 0</div><button id='btn'>click me</button><script>let s=0;const el=document.getElementById('score');document.getElementById('btn').onclick=()=>{s++;el.textContent='score: '+s;};<\/script></body></html>"
+    },
+    {
+      id: "default-2",
+      name: "reaction arcade",
+      category: "arcade",
+      image: "",
+      code: "<!DOCTYPE html><html><head><style>body{margin:0;background:#000;display:flex;align-items:center;justify-content:center;height:100vh;}#box{width:160px;height:160px;background:#22ff22;cursor:pointer;}</style></head><body><div id='box'></div><script>const box=document.getElementById('box');function moveBox(){box.style.position='absolute';box.style.left=Math.random()*80+'%';box.style.top=Math.random()*80+'%';}box.onclick=moveBox;moveBox();<\/script></body></html>"
+    },
+    {
+      id: "default-3",
+      name: "grid puzzle",
+      category: "puzzle",
+      image: "",
+      code: "<!DOCTYPE html><html><head><style>body{margin:0;background:#000;display:flex;align-items:center;justify-content:center;height:100vh;}#grid{display:grid;grid-template-columns:repeat(4,60px);gap:6px;}#grid div{width:60px;height:60px;background:#fff;cursor:pointer;}#grid div.off{background:#222;}</style></head><body><div id='grid'></div><script>const g=document.getElementById('grid');for(let i=0;i<16;i++){const d=document.createElement('div');d.onclick=()=>d.classList.toggle('off');g.appendChild(d);}<\/script></body></html>"
+    }
+  ];
+
+  function loadGames(){
+    try{
+      const raw = localStorage.getItem(GAMES_KEY);
+      if(raw){ return JSON.parse(raw); }
+      localStorage.setItem(GAMES_KEY, JSON.stringify(seedGames));
+      return seedGames.slice();
+    }catch(e){ return seedGames.slice(); }
+  }
+  function saveGames(list){
+    try{
+      localStorage.setItem(GAMES_KEY, JSON.stringify(list));
+      return true;
+    }catch(e){ return false; }
+  }
+
+  const DELETED_GAMES_KEY = "uniteSchoolGamesDeleted";
+  function loadDeletedGames(){
+    try{
+      const raw = localStorage.getItem(DELETED_GAMES_KEY);
+      return raw ? JSON.parse(raw) : [];
+    }catch(e){ return []; }
+  }
+  function saveDeletedGames(list){
+    try{
+      localStorage.setItem(DELETED_GAMES_KEY, JSON.stringify(list));
+      return true;
+    }catch(e){ return false; }
+  }
+
+  let deletedGames = loadDeletedGames();
+
+  let games = loadGames();
+  let currentFilter = "all";
+  let editingGameId = null;
+
+  function escapeHtml(str){
+    return String(str).replace(/[&<>"']/g, function(c){
+      return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c];
+    });
+  }
+
+  function renderGrid(){
+    const grid = document.getElementById("gamesGrid");
+    const emptyNote = document.getElementById("emptyNote");
+    grid.innerHTML = "";
+    const visible = games.filter(g => currentFilter === "all" || (g.category||"").toLowerCase() === currentFilter);
+
+    if(visible.length === 0){
+      emptyNote.style.display = "block";
+      return;
+    }
+    emptyNote.style.display = "none";
+
+    visible.forEach(function(game){
+      const tile = document.createElement("div");
+      tile.className = "tile";
+      tile.dataset.id = game.id;
+
+      const img = document.createElement("img");
+      img.src = game.image && game.image.trim() !== "" ? game.image : "data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Crect width='300' height='300' fill='black'/%3E%3C/svg%3E";
+      img.alt = game.name;
+      img.onerror = function(){ this.style.opacity = "0.15"; };
+
+      const label = document.createElement("div");
+      label.className = "tile-label";
+      label.innerHTML = escapeHtml(game.name) + "<span class='tile-cat lowercase'>" + escapeHtml(game.category||"") + "</span>";
+
+      tile.appendChild(img);
+      tile.appendChild(label);
+
+      tile.addEventListener("click", function(){
+        playBleep();
+        openGamePlayer(game);
+      });
+
+      grid.appendChild(tile);
+    });
+  }
+
+  function deleteGame(game){
+    const confirmed = window.confirm("delete \"" + game.name + "\"? it will be moved to recently deleted, where you can recover it.");
+    if(!confirmed) return;
+    games = games.filter(g => g.id !== game.id);
+    deletedGames.push(Object.assign({}, game, { deletedAt: Date.now() }));
+    const persistedGames = saveGames(games);
+    const persistedDeleted = saveDeletedGames(deletedGames);
+    if(!persistedGames || !persistedDeleted) playError();
+    renderGrid();
+    renderManageList();
+  }
+
+  function restoreGame(id){
+    playBleep();
+    const idx = deletedGames.findIndex(g => g.id === id);
+    if(idx === -1) return;
+    const restored = deletedGames.splice(idx, 1)[0];
+    delete restored.deletedAt;
+    games.push(restored);
+    saveGames(games);
+    saveDeletedGames(deletedGames);
+    renderGrid();
+    renderManageList();
+  }
+
+  function permanentlyDeleteGame(id){
+    const target = deletedGames.find(g => g.id === id);
+    if(!target) return;
+    const confirmed = window.confirm("permanently delete \"" + target.name + "\"? this cannot be undone.");
+    if(!confirmed) return;
+    playBleep();
+    deletedGames = deletedGames.filter(g => g.id !== id);
+    saveDeletedGames(deletedGames);
+    renderManageList();
+  }
+
+  function manageThumbSrc(game){
+    return game.image && game.image.trim() !== "" ? game.image : "data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Crect width='60' height='60' fill='black'/%3E%3C/svg%3E";
+  }
+
+  function renderManageList(){
+    const liveList = document.getElementById("manageGamesList");
+    const liveEmpty = document.getElementById("manageGamesEmpty");
+    const delList = document.getElementById("deletedGamesList");
+    const delEmpty = document.getElementById("deletedGamesEmpty");
+    if(!liveList) return;
+
+    liveList.innerHTML = "";
+    if(games.length === 0){
+      liveEmpty.style.display = "block";
+    }else{
+      liveEmpty.style.display = "none";
+      games.forEach(function(game){
+        const row = document.createElement("div");
+        row.className = "manage-row";
+
+        const thumb = document.createElement("img");
+        thumb.className = "manage-thumb";
+        thumb.src = manageThumbSrc(game);
+        thumb.alt = game.name;
+
+        const info = document.createElement("div");
+        info.className = "manage-info";
+        info.innerHTML = "<div class='manage-name'>" + escapeHtml(game.name) + "</div>" +
+                          "<div class='manage-meta lowercase'>" + escapeHtml(game.category||"") + "</div>";
+
+        const actions = document.createElement("div");
+        actions.className = "manage-row-actions";
+
+        const editBtn = document.createElement("button");
+        editBtn.className = "manage-btn";
+        editBtn.title = "edit game";
+        editBtn.textContent = "✎";
+        editBtn.addEventListener("click", function(){
+          playBleep();
+          openEditGame(game);
+        });
+
+        const delBtn = document.createElement("button");
+        delBtn.className = "manage-btn delete-btn";
+        delBtn.title = "delete game";
+        delBtn.textContent = "🗑";
+        delBtn.addEventListener("click", function(){
+          playBleep();
+          deleteGame(game);
+        });
+
+        actions.appendChild(editBtn);
+        actions.appendChild(delBtn);
+        row.appendChild(thumb);
+        row.appendChild(info);
+        row.appendChild(actions);
+        liveList.appendChild(row);
+      });
+    }
+
+    delList.innerHTML = "";
+    if(deletedGames.length === 0){
+      delEmpty.style.display = "block";
+    }else{
+      delEmpty.style.display = "none";
+      deletedGames.slice().reverse().forEach(function(game){
+        const row = document.createElement("div");
+        row.className = "manage-row deleted-row";
+
+        const thumb = document.createElement("img");
+        thumb.className = "manage-thumb";
+        thumb.src = manageThumbSrc(game);
+        thumb.alt = game.name;
+
+        const deletedDate = game.deletedAt ? new Date(game.deletedAt).toLocaleString() : "";
+        const info = document.createElement("div");
+        info.className = "manage-info";
+        info.innerHTML = "<div class='manage-name'>" + escapeHtml(game.name) + "</div>" +
+                          "<div class='manage-meta lowercase'>" + escapeHtml(game.category||"") + " · deleted " + escapeHtml(deletedDate) + "</div>";
+
+        const actions = document.createElement("div");
+        actions.className = "manage-row-actions";
+
+        const restoreBtn = document.createElement("button");
+        restoreBtn.className = "manage-btn restore-btn";
+        restoreBtn.title = "restore game";
+        restoreBtn.textContent = "↺";
+        restoreBtn.addEventListener("click", function(){ restoreGame(game.id); });
+
+        const purgeBtn = document.createElement("button");
+        purgeBtn.className = "manage-btn delete-btn";
+        purgeBtn.title = "delete forever";
+        purgeBtn.textContent = "🗑";
+        purgeBtn.addEventListener("click", function(){ permanentlyDeleteGame(game.id); });
+
+        actions.appendChild(restoreBtn);
+        actions.appendChild(purgeBtn);
+        row.appendChild(thumb);
+        row.appendChild(info);
+        row.appendChild(actions);
+        delList.appendChild(row);
+      });
+    }
+  }
+
+  document.getElementById("pillsRow").addEventListener("click", function(e){
+    const btn = e.target.closest(".pill");
+    if(!btn) return;
+    playBleep();
+    document.querySelectorAll(".pill").forEach(p => p.classList.remove("active"));
+    btn.classList.add("active");
+    currentFilter = btn.dataset.cat;
+    renderGrid();
+  });
+
+  renderGrid();
+  renderManageList();
+  const codeViewOverlay = document.getElementById("codeViewOverlay");
+  function openCodeView(game){
+    document.getElementById("codeViewTitle").textContent = (game.name||"source").toLowerCase();
+    document.getElementById("codeViewText").value = game.code || "";
+    codeViewOverlay.classList.add("open");
+    lockScroll();
+  }
+  function closeCodeView(){
+    codeViewOverlay.classList.remove("open");
+    resetScroll();
+  }
+  document.getElementById("codeCloseBtn").addEventListener("click", function(){
+    playBleep();
+    closeCodeView();
+  });
+
+  /* ---------------- GAME PLAYER ---------------- */
+  const gamePlayerView = document.getElementById("gamePlayerView");
+  const gameFrame = document.getElementById("gameFrame");
+  const perfHud = document.getElementById("perfHud");
+  let perfStart = 0;
+  let frameCount = 0;
+  let lastFpsUpdate = 0;
+  let rafId = null;
+
+  function openGamePlayer(game){
+    document.getElementById("playerTitle").textContent = (game.name||"game").toLowerCase();
+    gameFrame.srcdoc = game.code || "<html><body style='background:#000;color:#fff;font-family:sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;'>no source provided</body></html>";
+    gamePlayerView.classList.add("open");
+    lockScroll();
+    startPerfHud();
+  }
+  function closeGamePlayer(){
+    gamePlayerView.classList.remove("open");
+    gameFrame.srcdoc = "about:blank";
+    stopPerfHud();
+    resetScroll();
+  }
+
+  function startPerfHud(){
+    perfStart = performance.now();
+    frameCount = 0;
+    lastFpsUpdate = perfStart;
+    let fps = 60;
+    function tick(now){
+      frameCount++;
+      if(now - lastFpsUpdate >= 500){
+        fps = Math.round((frameCount * 1000) / (now - lastFpsUpdate));
+        frameCount = 0;
+        lastFpsUpdate = now;
+      }
+      const elapsed = Math.floor((now - perfStart) / 1000);
+      perfHud.textContent = "fps: " + fps + " | time: " + elapsed + "s";
+      rafId = requestAnimationFrame(tick);
+    }
+    rafId = requestAnimationFrame(tick);
+  }
+  function stopPerfHud(){
+    if(rafId) cancelAnimationFrame(rafId);
+    rafId = null;
+  }
+
+  document.getElementById("exitGameBtn").addEventListener("click", function(){
+    playBleep();
+    closeGamePlayer();
+  });
+
+  /* ---------------- LOCK OVERLAY (secret admin gate) ---------------- */
+  const lockOverlay = document.getElementById("lockOverlay");
+  const passcodeInput = document.getElementById("passcodeInput");
+  const ACCESS_CODE = "UNITE310";
+
+  document.getElementById("copyrightTrigger").addEventListener("click", function(){
+    lockOverlay.classList.add("open");
+    lockScroll();
+    passcodeInput.value = "";
+    setTimeout(() => passcodeInput.focus(), 50);
+  });
+
+  document.getElementById("lockCloseBtn").addEventListener("click", function(){
+    playBleep();
+    lockOverlay.classList.remove("open");
+    resetScroll();
+  });
+
+  passcodeInput.addEventListener("input", function(){
+    const val = passcodeInput.value;
+    if(val === ACCESS_CODE){
+      lockOverlay.classList.remove("open");
+      passcodeInput.value = "";
+      playBleep();
+      openAdmin();
+      return;
+    }
+    if(val.length >= 8){
+      playError();
+      passcodeInput.classList.add("shake");
+      setTimeout(function(){
+        passcodeInput.classList.remove("shake");
+        passcodeInput.value = "";
+      }, 400);
+    }
+  });
+
+  /* ---------------- ADMIN PANEL ---------------- */
+  const adminOverlay = document.getElementById("adminOverlay");
+  function openAdmin(){
+    adminOverlay.classList.add("open");
+    lockScroll();
+  }
+  function closeAdmin(){
+    adminOverlay.classList.remove("open");
+    resetScroll();
+    resetGameForm();
+  }
+  document.getElementById("adminCloseBtn").addEventListener("click", function(){
+    playBleep();
+    closeAdmin();
+  });
+
+  document.querySelectorAll(".admin-tab-btn").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      playBleep();
+      document.querySelectorAll(".admin-tab-btn").forEach(b => b.classList.remove("active"));
+      document.querySelectorAll(".admin-tab-content").forEach(c => c.classList.remove("active"));
+      btn.classList.add("active");
+      document.getElementById("tab-" + btn.dataset.tab).classList.add("active");
+      if(btn.dataset.tab === "manage") renderManageList();
+    });
+  });
+
+  function resetGameForm(){
+    editingGameId = null;
+    document.getElementById("publishForm").reset();
+    document.getElementById("fGameImageFileName").textContent = "";
+    document.getElementById("fGameCodeFileName").textContent = "";
+    document.getElementById("gameFormStatus").textContent = "";
+    document.querySelector('#publishForm button[type="submit"]').textContent = "publish game";
+  }
+
+  document.getElementById("clearFormBtn").addEventListener("click", function(){
+    playBleep();
+    resetGameForm();
+  });
+
+  function openEditGame(game){
+    editingGameId = game.id;
+    document.getElementById("fGameName").value = game.name;
+    document.getElementById("fGameCategory").value = game.category || "arcade";
+    document.getElementById("fGameImage").value = (game.image && !game.image.startsWith("data:")) ? game.image : "";
+    document.getElementById("fGameImageFileName").textContent = (game.image && game.image.startsWith("data:")) ? "current cover image is set — upload a new file only if you want to replace it" : "";
+    document.getElementById("fGameCode").value = game.code || "";
+    document.getElementById("fGameCodeFileName").textContent = "";
+    document.getElementById("gameFormStatus").textContent = "";
+    document.querySelector('#publishForm button[type="submit"]').textContent = "update game";
+
+    document.querySelectorAll(".admin-tab-btn").forEach(b => b.classList.remove("active"));
+    document.querySelectorAll(".admin-tab-content").forEach(c => c.classList.remove("active"));
+    document.querySelector('.admin-tab-btn[data-tab="games"]').classList.add("active");
+    document.getElementById("tab-games").classList.add("active");
+
+    openAdmin();
+  }
+
+  document.getElementById("fGameImageFile").addEventListener("change", function(){
+    const f = this.files[0];
+    document.getElementById("fGameImageFileName").textContent = f ? (f.name + " (" + formatBytes(f.size) + ")") : "";
+  });
+
+  document.getElementById("fGameCodeFile").addEventListener("change", function(){
+    const f = this.files[0];
+    const nameEl = document.getElementById("fGameCodeFileName");
+    if(!f){ nameEl.textContent = ""; return; }
+    nameEl.textContent = f.name + " (" + formatBytes(f.size) + ")";
+    readFileAsText(f).then(function(text){
+      document.getElementById("fGameCode").value = text;
+    });
+  });
+
+  document.getElementById("publishForm").addEventListener("submit", function(e){
+    e.preventDefault();
+
+    const statusEl = document.getElementById("gameFormStatus");
+    const submitBtn = document.querySelector('#publishForm button[type="submit"]');
+    const name = document.getElementById("fGameName").value.trim();
+    const category = document.getElementById("fGameCategory").value;
+    const urlVal = document.getElementById("fGameImage").value.trim();
+    const code = document.getElementById("fGameCode").value;
+    const imageFile = document.getElementById("fGameImageFile").files[0];
+
+    if(!name || !code){
+      statusEl.textContent = "game name and source code are required.";
+      statusEl.className = "form-status warn lowercase";
+      return;
+    }
+
+    playBleep();
+    submitBtn.disabled = true;
+    const wasEditing = !!editingGameId;
+    submitBtn.textContent = wasEditing ? "updating..." : "publishing...";
+    statusEl.textContent = "";
+
+    function finishPublish(imageValue){
+      if(editingGameId){
+        const idx = games.findIndex(g => g.id === editingGameId);
+        if(idx !== -1){
+          games[idx] = {
+            id: games[idx].id,
+            name: name,
+            category: category,
+            image: imageValue,
+            code: code
+          };
+        }
+      }else{
+        games.push({
+          id: "custom-" + Date.now(),
+          name: name,
+          category: category,
+          image: imageValue,
+          code: code
+        });
+      }
+
+      const persisted = saveGames(games);
+      resetGameForm();
+      closeAdmin();
+      currentFilter = "all";
+      document.querySelectorAll(".pill").forEach(p => p.classList.remove("active"));
+      document.querySelector('.pill[data-cat="all"]').classList.add("active");
+      renderGrid();
+      renderManageList();
+      submitBtn.disabled = false;
+
+      if(!persisted){
+        statusEl.textContent = "note: this game could not be permanently saved — browser storage is full.";
+        statusEl.className = "form-status warn lowercase";
+      }
+    }
+
+    function fail(){
+      submitBtn.disabled = false;
+      submitBtn.textContent = wasEditing ? "update game" : "publish game";
+      statusEl.textContent = "something went wrong reading that image. try a smaller file or a link instead.";
+      statusEl.className = "form-status warn lowercase";
+    }
+
+    // existing image kept when editing and no new file/url given
+    const existingImage = editingGameId ? (games.find(g => g.id === editingGameId) || {}).image || "" : "";
+
+    if(imageFile){
+      resizeImageFile(imageFile, 500, 0.82).then(finishPublish).catch(fail);
+    }else if(urlVal){
+      finishPublish(urlVal);
+    }else{
+      finishPublish(existingImage);
+    }
+  });
+
+  document.getElementById("exportBtn").addEventListener("click", function(){
+    playBleep();
+    const out = document.getElementById("exportOut");
+    out.value = JSON.stringify({ games: games, deletedGames: deletedGames, music: musicTracks }, null, 2);
+    out.style.display = "block";
+    out.focus();
+    out.select();
+    if(navigator.clipboard){
+      navigator.clipboard.writeText(out.value).catch(function(){});
+    }
+  });
+
+  /* ================= MUSIC LIBRARY (unite.music) ================= */
+  const MUSIC_KEY = "uniteMusicLibrary";
+
+  function loadTracks(){
+    try{
+      const raw = localStorage.getItem(MUSIC_KEY);
+      return raw ? JSON.parse(raw) : [];
+    }catch(e){ return []; }
+  }
+  function saveTracks(list){
+    try{
+      localStorage.setItem(MUSIC_KEY, JSON.stringify(list));
+      return true;
+    }catch(e){ return false; }
+  }
+
+  let musicTracks = loadTracks();
+
+  function renderMusicGrid(){
+    const grid = document.getElementById("musicGrid");
+    const emptyNote = document.getElementById("musicEmptyNote");
+    grid.innerHTML = "";
+
+    if(musicTracks.length === 0){
+      emptyNote.style.display = "block";
+      return;
+    }
+    emptyNote.style.display = "none";
+
+    musicTracks.forEach(function(track){
+      const card = document.createElement("div");
+      card.className = "track-card";
+      card.dataset.id = track.id;
+
+      const cover = document.createElement("div");
+      cover.className = "track-cover";
+      if(track.cover){
+        const img = document.createElement("img");
+        img.src = track.cover;
+        img.alt = track.title;
+        cover.appendChild(img);
+      }else{
+        const fallback = document.createElement("div");
+        fallback.className = "note-fallback";
+        fallback.textContent = "♪";
+        cover.appendChild(fallback);
+      }
+
+      const playBtn = document.createElement("div");
+      playBtn.className = "track-play-btn";
+      playBtn.textContent = (currentTrackId === track.id && isPlaying) ? "⏸" : "▶";
+      if(currentTrackId === track.id && isPlaying) playBtn.classList.add("playing");
+      cover.appendChild(playBtn);
+
+      const meta = document.createElement("div");
+      meta.className = "track-meta";
+      meta.innerHTML = "<div class='track-title lowercase'>" + escapeHtml(track.title) + "</div>" +
+                        "<div class='track-artist lowercase'>" + escapeHtml(track.artist) + "</div>";
+
+      card.appendChild(cover);
+      card.appendChild(meta);
+      card.addEventListener("click", function(){
+        playBleep();
+        if(currentTrackId === track.id){
+          togglePlay();
+        }else{
+          playTrack(track);
+        }
+      });
+
+      grid.appendChild(card);
+    });
+  }
+
+  document.getElementById("musicNavBtn").addEventListener("click", function(){
+    playBleep();
+    document.getElementById("musicOverlay").classList.add("open");
+    lockScroll();
+    renderMusicGrid();
+  });
+  document.getElementById("musicCloseBtn").addEventListener("click", function(){
+    playBleep();
+    document.getElementById("musicOverlay").classList.remove("open");
+    resetScroll();
+  });
+
+  document.getElementById("fMp3File").addEventListener("change", function(){
+    const f = this.files[0];
+    document.getElementById("fMp3FileName").textContent = f ? (f.name + " (" + formatBytes(f.size) + ")") : "";
+  });
+  document.getElementById("fCoverFile").addEventListener("change", function(){
+    const f = this.files[0];
+    document.getElementById("fCoverFileName").textContent = f ? (f.name + " (" + formatBytes(f.size) + ")") : "";
+  });
+
+  document.getElementById("clearMusicFormBtn").addEventListener("click", function(){
+    playBleep();
+    document.getElementById("musicForm").reset();
+    document.getElementById("fMp3FileName").textContent = "";
+    document.getElementById("fCoverFileName").textContent = "";
+    document.getElementById("musicFormStatus").textContent = "";
+  });
+
+  document.getElementById("musicForm").addEventListener("submit", function(e){
+    e.preventDefault();
+
+    const statusEl = document.getElementById("musicFormStatus");
+    const submitBtn = document.querySelector('#musicForm button[type="submit"]');
+    const title = document.getElementById("fSongName").value.trim();
+    const artist = document.getElementById("fArtistName").value.trim();
+    const mp3File = document.getElementById("fMp3File").files[0];
+    const coverFile = document.getElementById("fCoverFile").files[0];
+
+    if(!title || !artist || !mp3File){
+      statusEl.textContent = "song name, artist, and an mp3 file are required.";
+      statusEl.className = "form-status warn lowercase";
+      return;
+    }
+
+    playBleep();
+    submitBtn.disabled = true;
+    submitBtn.textContent = "releasing...";
+    statusEl.textContent = "";
+
+    Promise.all([
+      readFileAsDataURL(mp3File),
+      coverFile ? resizeImageFile(coverFile, 500, 0.82) : Promise.resolve("")
+    ]).then(function(results){
+      const audioData = results[0];
+      const coverData = results[1];
+
+      const newTrack = {
+        id: "track-" + Date.now(),
+        title: title,
+        artist: artist,
+        audio: audioData,
+        cover: coverData
+      };
+
+      musicTracks.push(newTrack);
+      const persisted = saveTracks(musicTracks);
+
+      document.getElementById("musicForm").reset();
+      document.getElementById("fMp3FileName").textContent = "";
+      document.getElementById("fCoverFileName").textContent = "";
+      renderMusicGrid();
+      submitBtn.disabled = false;
+      submitBtn.textContent = "release music";
+
+      if(persisted){
+        statusEl.textContent = "released. \"" + title + "\" is now live on unite.music.";
+        statusEl.className = "form-status ok lowercase";
+      }else{
+        statusEl.textContent = "released for this session — the mp3 was too large to save permanently in this browser's storage.";
+        statusEl.className = "form-status warn lowercase";
+      }
+    }).catch(function(){
+      submitBtn.disabled = false;
+      submitBtn.textContent = "release music";
+      statusEl.textContent = "something went wrong reading those files. please try again.";
+      statusEl.className = "form-status warn lowercase";
+    });
+  });
+
+  /* ---------------- PLAYER BAR ---------------- */
+  const audioPlayer = document.getElementById("audioPlayer");
+  const playerBar = document.getElementById("playerBar");
+  const playerToggleBtn = document.getElementById("playerToggleBtn");
+  const playerSeek = document.getElementById("playerSeek");
+  const playerTimeCurrent = document.getElementById("playerTimeCurrent");
+  const playerTimeTotal = document.getElementById("playerTimeTotal");
+  const playerBarCover = document.getElementById("playerBarCover");
+  const playerBarTitle = document.getElementById("playerBarTitle");
+  const playerBarArtist = document.getElementById("playerBarArtist");
+
+  let currentTrackId = null;
+  let isPlaying = false;
+
+  function formatTime(sec){
+    if(!isFinite(sec) || sec < 0) sec = 0;
+    const m = Math.floor(sec / 60);
+    const s = Math.floor(sec % 60);
+    return m + ":" + (s < 10 ? "0" : "") + s;
+  }
+
+  function playTrack(track){
+    currentTrackId = track.id;
+    audioPlayer.src = track.audio;
+    audioPlayer.play().catch(function(){});
+    isPlaying = true;
+    playerBar.classList.add("active");
+    playerBarTitle.textContent = track.title.toLowerCase();
+    playerBarArtist.textContent = track.artist.toLowerCase();
+    playerBarCover.src = track.cover || "data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Crect width='60' height='60' fill='black'/%3E%3C/svg%3E";
+    playerToggleBtn.textContent = "⏸";
+    renderMusicGrid();
+  }
+
+  function togglePlay(){
+    if(!audioPlayer.src) return;
+    if(isPlaying){
+      audioPlayer.pause();
+      isPlaying = false;
+      playerToggleBtn.textContent = "▶";
+    }else{
+      audioPlayer.play().catch(function(){});
+      isPlaying = true;
+      playerToggleBtn.textContent = "⏸";
+    }
+    renderMusicGrid();
+  }
+
+  playerToggleBtn.addEventListener("click", function(){
+    playBleep();
+    togglePlay();
+  });
+
+  audioPlayer.addEventListener("timeupdate", function(){
+    if(audioPlayer.duration){
+      playerSeek.value = (audioPlayer.currentTime / audioPlayer.duration) * 100;
+      playerTimeCurrent.textContent = formatTime(audioPlayer.currentTime);
+      playerTimeTotal.textContent = formatTime(audioPlayer.duration);
+    }
+  });
+  audioPlayer.addEventListener("ended", function(){
+    isPlaying = false;
+    playerToggleBtn.textContent = "▶";
+    renderMusicGrid();
+  });
+  playerSeek.addEventListener("input", function(){
+    if(audioPlayer.duration){
+      audioPlayer.currentTime = (playerSeek.value / 100) * audioPlayer.duration;
+    }
+  });
+
+})();
+</script>
+</body>
+</html>
