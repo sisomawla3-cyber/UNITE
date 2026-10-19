@@ -482,7 +482,7 @@
     .lockout-msg {
       font-size: 28px;
       letter-spacing: 1.5px;
-      color: #ffffff;
+      color: #ff0000; /* Strict red text exclusively for unauthorized message */
       margin-bottom: 30px;
       text-align: center;
       text-transform: uppercase;
@@ -1104,7 +1104,7 @@
        JAVASCRIPT LOGIC
   ========================================================= -->
   <script>
-    // Rolling dynamic Date calculation for DDMM + 1810
+    // Rolling dynamic Date calculation for DDMM (Today is Oct 19 -> 1910)
     function getValidDateCodes() {
       const now = new Date();
       const yesterday = new Date();
@@ -1121,16 +1121,21 @@
       return [format(yesterday), format(now), format(tomorrow)];
     }
 
-    // Load games from localStorage or default to empty array
-    let gamesList = JSON.parse(localStorage.getItem('unite_games_list')) || [];
-    let recommendationsList = JSON.parse(localStorage.getItem('unite_recs_list')) || [
-      { id: '1', author: 'Sarry', gameName: 'Retro Arcade Racer' }
+    // Master universal game library hardcoded into the file so everyone gets it automatically
+    let gamesList = [
+      { id: '2048', title: '2048', cover: '', htmlContent: `<!DOCTYPE html><html><head><meta charset="utf-8"><title>2048</title><base href="https://cdn.jsdelivr.net/gh/ovolve/2048-AI@master/"><link href="style/main.css" rel="stylesheet" type="text/css"><link href="style/ai.css" rel="stylesheet" type="text/css"></head><body><div class="container"><div class="heading"><h1 class="title">2048</h1><div class="score-container">0</div></div><div class="game-container"><div class="grid-container"><div class="grid-row"><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div></div><div class="grid-row"><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div></div><div class="grid-row"><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div></div><div class="grid-row"><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div></div></div><div class="tile-container"></div></div></div><script src="js/animframe_polyfill.js"><\/script><script src="js/keyboard_input_manager.js"><\/script><script src="js/html_actuator.js"><\/script><script src="js/grid.js"><\/script><script src="js/tile.js"><\/script><script src="js/game_manager.js"><\/script><script src="js/application.js"><\/script></body></html>` },
+      { id: 'adarkroom', title: 'A Dark Room', cover: '', htmlContent: `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>A Dark Room</title></head><body style="background:#000; color:#fff; font-family:monospace; padding:40px;"><iframe src="https://doublespeakgames.github.io/adarkroom/" style="width:100%;height:80vh;border:none;"></iframe></body></html>` },
+      { id: 'adayintheoffice', title: 'A Day in the Office', cover: '', htmlContent: `<!DOCTYPE html><html><head><meta charset="utf-8"><title>A Day in the Office</title><base href="https://cdn.jsdelivr.net/gh/bubbls/UGS-Assets@027a7fc4b20820dc401547a74cf4f2ee875cd3e2/a%20day%20in%20the%20office/"></head><body style="background:#000; margin:0;"><iframe src="https://cdn.jsdelivr.net/gh/bubbls/UGS-Assets@027a7fc4b20820dc401547a74cf4f2ee875cd3e2/a%20day%20in%20the%20office/index.html" style="width:100vw;height:100vh;border:none;"></iframe></body></html>` },
+      { id: 'adofai', title: 'A Dance of Fire and Ice', cover: '', htmlContent: `<!DOCTYPE html><html><head><meta charset="utf-8"><title>ADOFAI</title></head><body style="background:#000; margin:0;"><iframe src="https://cdn.jsdelivr.net/gh/udbsite/adofai@f170efcb1b532312817e69f26ce3f84c99940238/index.html" style="width:100vw;height:100vh;border:none;"></iframe></body></html>` },
+      { id: 'adventneon', title: 'AdventNEON', cover: '', htmlContent: `<!DOCTYPE html><html><head><meta charset="utf-8"><title>AdventNEON</title></head><body style="background:#000; margin:0;"><iframe src="https://cdn.jsdelivr.net/gh/Stinkalistic/UGS@main/MISC/adventneon/index.html" style="width:100vw;height:100vh;border:none;"></iframe></body></html>` },
+      { id: 'adventurecapitalist', title: 'AdVenture Capitalist', cover: '', htmlContent: `<!DOCTYPE html><html><head><meta charset="utf-8"><title>AdVenture Capitalist</title></head><body style="background:#000; margin:0;"><iframe src="https://rawcdn.githack.com/selenite-cc/selenite-old/9c743188888af0986c8c7b293dbac8f9e421a4ee/adventure-capitalist/index.html" style="width:100vw;height:100vh;border:none;"></iframe></body></html>` },
+      { id: 'ballswithweapons', title: 'A Game About Balls with Weapons', cover: '', htmlContent: `<!DOCTYPE html><html><head><meta charset="utf-8"><title>Balls with Weapons</title></head><body style="background:#000; margin:0;"><iframe src="https://cdn.jsdelivr.net/gh/linkawaken1979-alt/a-game-about-balls-and-weapons-web-port/index.html" style="width:100vw;height:100vh;border:none;"></iframe></body></html>` },
+      { id: 'ahoysurvival', title: 'Ahoy Survival', cover: '', htmlContent: `<!DOCTYPE html><html><head><meta charset="utf-8"><title>Ahoy Survival</title></head><body style="background:#000; margin:0;"><iframe src="https://cdn.jsdelivr.net/gh/gertdoro/UnityExplorer@e6b59708ba479552b77ff6fd7ff5b73885db6279/lib/Ahoy/index.html" style="width:100vw;height:100vh;border:none;"></iframe></body></html>` }
     ];
 
-    function saveToLocalStorage() {
-      localStorage.setItem('unite_games_list', JSON.stringify(gamesList));
-      localStorage.setItem('unite_recs_list', JSON.stringify(recommendationsList));
-    }
+    let recommendationsList = [
+      { id: '1', author: 'Sarry', gameName: 'Retro Arcade Racer' }
+    ];
 
     let activeSourceType = 'text';
 
@@ -1163,7 +1168,7 @@
       const pass = document.getElementById('password').value.trim();
 
       const validDates = getValidDateCodes();
-      const isCorrectPassword = (pass === '1810' || validDates.includes(pass));
+      const isCorrectPassword = validDates.includes(pass);
 
       if (user === 'uniteisgoated' && isCorrectPassword) {
         document.getElementById('sparx-container').style.display = 'none';
@@ -1197,7 +1202,7 @@
       );
 
       if (filteredGames.length === 0) {
-        grid.innerHTML = '<div class="empty-state-text">No games available yet. Add some via Admin!</div>';
+        grid.innerHTML = '<div class="empty-state-text">No games found matching your search.</div>';
         return;
       }
 
@@ -1284,7 +1289,6 @@
         gameName: gameName
       });
 
-      saveToLocalStorage();
       document.getElementById('recAuthorName').value = '';
       document.getElementById('recGameName').value = '';
       alert('Recommendation submitted successfully!');
@@ -1406,14 +1410,13 @@
       };
 
       gamesList.push(newGame);
-      saveToLocalStorage();
 
       document.getElementById('newGameTitle').value = '';
       document.getElementById('newGameHtmlText').value = '';
       document.getElementById('newGameCoverFile').value = '';
       document.getElementById('newGameHtmlFile').value = '';
       
-      alert('Game successfully added to library!');
+      alert('Game successfully added! (Tip: To make it universal for others, copy this new game object into the master gamesList array in the source code).');
       renderAdminLists();
       renderGamesGrid();
     }
@@ -1463,14 +1466,12 @@
 
     function deleteGame(id) {
       gamesList = gamesList.filter(g => g.id !== id);
-      saveToLocalStorage();
       renderAdminLists();
       renderGamesGrid();
     }
 
     function deleteRecommendation(id) {
       recommendationsList = recommendationsList.filter(r => r.id !== id);
-      saveToLocalStorage();
       renderAdminLists();
     }
 
@@ -1484,7 +1485,6 @@
           htmlContent: `<!DOCTYPE html><html><head><meta charset="utf-8"><title>${rec.gameName}</title></head><body style="background:#000;color:#fff;text-align:center;padding-top:50px;font-family:sans-serif;"><h1>${rec.gameName}</h1><p>Recommended by ${rec.author}</p></body></html>`
         });
         deleteRecommendation(id);
-        saveToLocalStorage();
         renderGamesGrid();
         alert('Recommendation approved and added to games grid!');
       }
